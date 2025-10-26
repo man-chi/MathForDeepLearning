@@ -16,16 +16,20 @@
 
 import numpy as np
 
+
 #  Activation function and derivative
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
+
 def sigmoid_prime(x):
-    return sigmoid(x)*(1.0 - sigmoid(x))
+    return sigmoid(x) * (1.0 - sigmoid(x))
+
 
 #  Loss function and derivative
 def mse(y_true, y_pred):
-    return (0.5*(y_true - y_pred)**2).mean()
+    return (0.5 * (y_true - y_pred) ** 2).mean()
+
 
 def mse_prime(y_true, y_pred):
     return y_pred - y_true
@@ -41,7 +45,7 @@ class ActivationLayer:
 
     def backward(self, output_error):
         return sigmoid_prime(self.input) * output_error
-    
+
     def step(self, eta):
         return
 
@@ -53,7 +57,7 @@ class FullyConnectedLayer:
     def __init__(self, input_size, output_size):
         #  for accumulating error over a minibatch
         self.delta_w = np.zeros((input_size, output_size))
-        self.delta_b = np.zeros((1,output_size))
+        self.delta_b = np.zeros((1, output_size))
         self.passes = 0
 
         #  initialize the weights and biases w/small random values
@@ -128,15 +132,14 @@ class Network:
                 error = mse_prime(y_batch[j], output)
                 for layer in reversed(self.layers):
                     error = layer.backward(error)
-            
+
             #  update weights and biases
             for layer in self.layers:
                 layer.step(learning_rate)
 
             # report mean loss over minibatch
-            if (self.verbose) and ((i%10) == 0):
+            if (self.verbose) and ((i % 10) == 0):
                 err /= batch_size
                 print('minibatch %5d/%d   error=%0.9f' % (i, minibatches, err))
 
 # end NN.py
-

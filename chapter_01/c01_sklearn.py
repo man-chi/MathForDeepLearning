@@ -24,4 +24,3 @@ print("errors:")
 print("  actual   : ", y_test[err])
 print("  predicted: ", pred[err])
 print()
-

@@ -12,26 +12,27 @@
 import numpy as np
 from sklearn.datasets import load_iris
 
+
 def BuildDataset():
     """Create the dataset"""
 
     #  Get the dataset keeping the first two features
     iris = load_iris()
-    x = iris["data"][:,:2]
+    x = iris["data"][:, :2]
     y = iris["target"]
 
     #  Standardize and keep only classes 0 and 1
     x = (x - x.mean(axis=0)) / x.std(axis=0)
     i0 = np.where(y == 0)[0]
     i1 = np.where(y == 1)[0]
-    x = np.vstack((x[i0],x[i1]))
+    x = np.vstack((x[i0], x[i1]))
 
     #  Train and test data
-    xtrn = np.vstack((x[:35],x[50:85]))
-    ytrn = np.array([0]*35 + [1]*35)
-    xtst = np.vstack((x[35:50],x[85:]))
-    ytst = np.array([0]*15+[1]*15)
-    
+    xtrn = np.vstack((x[:35], x[50:85]))
+    ytrn = np.array([0] * 35 + [1] * 35)
+    xtst = np.vstack((x[35:50], x[85:]))
+    ytst = np.array([0] * 15 + [1] * 15)
+
     idx = np.argsort(np.random.random(70))
     xtrn = xtrn[idx]
     ytrn = ytrn[idx]
@@ -58,11 +59,11 @@ def Forward(net, x):
     out = np.zeros(x.shape[0])
 
     for k in range(x.shape[0]):
-        z0 = net["w0"]*x[k,0] + net["w2"]*x[k,1] + net["b0"]
+        z0 = net["w0"] * x[k, 0] + net["w2"] * x[k, 1] + net["b0"]
         a0 = sigmoid(z0)
-        z1 = net["w1"]*x[k,0] + net["w3"]*x[k,1] + net["b1"]
+        z1 = net["w1"] * x[k, 0] + net["w3"] * x[k, 1] + net["b1"]
         a1 = sigmoid(z1)
-        out[k] = net["w4"]*a0 + net["w5"]*a1 + net["b2"]
+        out[k] = net["w4"] * a0 + net["w5"] * a1 + net["b2"]
 
     return out
 
@@ -76,7 +77,7 @@ def Evaluate(net, x, y):
     out = Forward(net, x)
     tn = fp = fn = tp = 0
     pred = []
-    
+
     for i in range(len(y)):
         c = 0 if (out[i] < 0.5) else 1
         pred.append(c)
@@ -88,9 +89,8 @@ def Evaluate(net, x, y):
             fp += 1
         else:
             tp += 1
-    
-    return tn,fp,fn,tp,pred
 
+    return tn, fp, fn, tp, pred
 
 
 ################################################################
@@ -105,22 +105,22 @@ def GradientDescent(net, x, y, epochs, eta):
 
         for k in range(len(y)):
             #  Forward pass
-            z0 = net["w0"]*x[k,0] + net["w2"]*x[k,1] + net["b0"]
+            z0 = net["w0"] * x[k, 0] + net["w2"] * x[k, 1] + net["b0"]
             a0 = sigmoid(z0)
-            z1 = net["w1"]*x[k,0] + net["w3"]*x[k,1] + net["b1"]
+            z1 = net["w1"] * x[k, 0] + net["w3"] * x[k, 1] + net["b1"]
             a1 = sigmoid(z1)
-            a2 = net["w4"]*a0 + net["w5"]*a1 + net["b2"]
+            a2 = net["w4"] * a0 + net["w5"] * a1 + net["b2"]
 
             #  Backward pass
             db2 += a2 - y[k]
             dw4 += (a2 - y[k]) * a0
             dw5 += (a2 - y[k]) * a1
             db1 += (a2 - y[k]) * net["w5"] * a1 * (1 - a1)
-            dw1 += (a2 - y[k]) * net["w5"] * a1 * (1 - a1) * x[k,0]
-            dw3 += (a2 - y[k]) * net["w5"] * a1 * (1 - a1) * x[k,1]
+            dw1 += (a2 - y[k]) * net["w5"] * a1 * (1 - a1) * x[k, 0]
+            dw3 += (a2 - y[k]) * net["w5"] * a1 * (1 - a1) * x[k, 1]
             db0 += (a2 - y[k]) * net["w4"] * a0 * (1 - a0)
-            dw0 += (a2 - y[k]) * net["w4"] * a0 * (1 - a0) * x[k,0]
-            dw2 += (a2 - y[k]) * net["w4"] * a0 * (1 - a0) * x[k,1]
+            dw0 += (a2 - y[k]) * net["w4"] * a0 * (1 - a0) * x[k, 0]
+            dw2 += (a2 - y[k]) * net["w4"] * a0 * (1 - a0) * x[k, 1]
 
         #  Use average deltas to update the network
         m = len(y)
@@ -145,7 +145,7 @@ def main():
     """Build and train a simple neural network"""
 
     epochs = 1000  # training epochs
-    eta = 0.1      # learning rate
+    eta = 0.1  # learning rate
 
     #  Get the train/test data
     xtrn, ytrn, xtst, ytst = BuildDataset()
@@ -155,21 +155,21 @@ def main():
     net["b2"] = 0.0
     net["b1"] = 0.0
     net["b0"] = 0.0
-    net["w5"] = 0.0001*(np.random.random() - 0.5)
-    net["w4"] = 0.0001*(np.random.random() - 0.5)
-    net["w3"] = 0.0001*(np.random.random() - 0.5)
-    net["w2"] = 0.0001*(np.random.random() - 0.5)
-    net["w1"] = 0.0001*(np.random.random() - 0.5)
-    net["w0"] = 0.0001*(np.random.random() - 0.5)
+    net["w5"] = 0.0001 * (np.random.random() - 0.5)
+    net["w4"] = 0.0001 * (np.random.random() - 0.5)
+    net["w3"] = 0.0001 * (np.random.random() - 0.5)
+    net["w2"] = 0.0001 * (np.random.random() - 0.5)
+    net["w1"] = 0.0001 * (np.random.random() - 0.5)
+    net["w0"] = 0.0001 * (np.random.random() - 0.5)
 
     #  Do a forward pass to get initial performance
-    tn0,fp0,fn0,tp0,pred0 = Evaluate(net, xtst, ytst)
+    tn0, fp0, fn0, tp0, pred0 = Evaluate(net, xtst, ytst)
 
     #  Gradient descent
     net = GradientDescent(net, xtrn, ytrn, epochs, eta)
 
     #  Final model performance
-    tn,fp,fn,tp,pred = Evaluate(net, xtst, ytst)
+    tn, fp, fn, tp, pred = Evaluate(net, xtst, ytst)
 
     #  Summarize performance
     print()
@@ -187,5 +187,3 @@ def main():
 
 if (__name__ == "__main__"):
     main()
-
-

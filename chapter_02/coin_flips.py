@@ -14,10 +14,10 @@ import numpy as np
 N = 1000000
 M = 4
 
-heads = np.zeros(M+1)
+heads = np.zeros(M + 1)
 
 for i in range(N):
-    flips = np.random.randint(0,2,M)
+    flips = np.random.randint(0, 2, M)
     h, _ = np.bincount(flips, minlength=2)
     heads[h] += 1
 
@@ -26,4 +26,3 @@ prob = heads / N
 print()
 print("Probabilities: %s" % np.array2string(prob))
 print()
-
